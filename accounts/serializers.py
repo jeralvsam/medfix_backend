@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from .models import Ticket
 
 User = get_user_model()
 
@@ -20,3 +21,8 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError("Wrong password")
 
         return user   # ✅ VERY IMPORTANT
+
+class TicketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ticket
+        fields = '__all__'
