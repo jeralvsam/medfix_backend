@@ -28,20 +28,27 @@ class TicketViewSet(viewsets.ModelViewSet):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
 
+    def create(self, request, *args, **kwargs):
+        print("CREATE HIT:", request.data)
+
+        serializer = self.get_serializer(data=request.data)
+
+        if not serializer.is_valid():
+            print("CREATE ERROR:", serializer.errors)
+            return Response(serializer.errors, status=400)
+
+        self.perform_create(serializer)
+        return Response(serializer.data, status=201)
+
     def partial_update(self, request, *args, **kwargs):
         print("PATCH HIT:", request.data)
 
         instance = self.get_object()
-
         current_status = instance.status
 
         if current_status == "REPORTED":
             instance.status = "CHECKED"
-
         elif current_status == "CHECKED":
-            instance.status = "RESOLVED"
-
-        elif current_status == "RESOLVED":
             instance.status = "RESOLVED"
 
         instance.save()
