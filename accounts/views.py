@@ -24,9 +24,18 @@ class LoginView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class TicketViewSet(viewsets.ModelViewSet):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
+
+    def perform_create(self, serializer):
+        print("CREATED_BY RECEIVED:", self.request.data.get("created_by"))
+
+        serializer.save(
+            created_by_id=self.request.data.get("created_by"),
+            status="REPORTED"
+        )
 
     def create(self, request, *args, **kwargs):
         print("CREATE HIT:", request.data)
