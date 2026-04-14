@@ -27,3 +27,24 @@ class LoginView(APIView):
 class TicketViewSet(viewsets.ModelViewSet):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
+
+    def partial_update(self, request, *args, **kwargs):
+    print("PATCH HIT:", request.data)
+
+    instance = self.get_object()
+
+    current_status = instance.status
+
+    if current_status == "REPORTED":
+        instance.status = "CHECKED"
+
+    elif current_status == "CHECKED":
+        instance.status = "RESOLVED"
+
+    elif current_status == "RESOLVED":
+        instance.status = "RESOLVED"
+
+    instance.save()
+
+    serializer = self.get_serializer(instance)
+    return Response(serializer.data)
