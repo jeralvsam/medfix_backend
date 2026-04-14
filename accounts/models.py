@@ -26,6 +26,9 @@ class Ticket(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tickets')
 
     created_at = models.DateTimeField(auto_now_add=True)
+    reported_at = models.DateTimeField(null=True, blank=True)
+    checked_at = models.DateTimeField(null=True, blank=True)
+    resolved_at = models.DateTimeField(null=True, blank=True)
     
 
     def __str__(self):

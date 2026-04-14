@@ -7,6 +7,7 @@ from .serializers import LoginSerializer
 from rest_framework import viewsets
 from .models import Ticket
 from .serializers import TicketSerializer
+from django.utils import timezone
 
 @method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView):
@@ -53,12 +54,16 @@ class TicketViewSet(viewsets.ModelViewSet):
         print("PATCH HIT:", request.data)
 
         instance = self.get_object()
-        current_status = instance.status
 
-        if current_status == "REPORTED":
-            instance.status = "CHECKED"
-        elif current_status == "CHECKED":
-            instance.status = "RESOLVED"
+        status_value = request.data.get("status")
+
+        if status_value == "CHECKED":
+          instance.status = "CHECKED"
+          instance.checked_at = timezone.now()
+
+        elif status_value == "RESOLVED":
+         instance.status = "RESOLVED"
+         instance.resolved_at = timezone.now()
 
         instance.save()
 
