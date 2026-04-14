@@ -19,7 +19,6 @@ class Migration(migrations.Migration):
                 ('computer_id', models.CharField(max_length=100)),
                 ('location', models.CharField(max_length=100)),
                 ('description', models.TextField()),
-                ('status', models.CharField(choices=[('PENDING', 'Pending'), ('RESOLVED', 'Resolved')], default='PENDING', max_length=20)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('created_by', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tickets', to=settings.AUTH_USER_MODEL)),
             ],
