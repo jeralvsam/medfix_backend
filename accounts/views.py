@@ -23,28 +23,28 @@ class LoginView(APIView):
             })
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 class TicketViewSet(viewsets.ModelViewSet):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
 
     def partial_update(self, request, *args, **kwargs):
-    print("PATCH HIT:", request.data)
+        print("PATCH HIT:", request.data)
 
-    instance = self.get_object()
+        instance = self.get_object()
 
-    current_status = instance.status
+        current_status = instance.status
 
-    if current_status == "REPORTED":
-        instance.status = "CHECKED"
+        if current_status == "REPORTED":
+            instance.status = "CHECKED"
 
-    elif current_status == "CHECKED":
-        instance.status = "RESOLVED"
+        elif current_status == "CHECKED":
+            instance.status = "RESOLVED"
 
-    elif current_status == "RESOLVED":
-        instance.status = "RESOLVED"
+        elif current_status == "RESOLVED":
+            instance.status = "RESOLVED"
 
-    instance.save()
+        instance.save()
 
-    serializer = self.get_serializer(instance)
-    return Response(serializer.data)
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
