@@ -8,6 +8,7 @@ from rest_framework import viewsets
 from .models import Ticket
 from .serializers import TicketSerializer
 from django.utils import timezone
+from datetime import timedelta
 
 @method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView):
@@ -69,3 +70,30 @@ class TicketViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+
+class AnalyticsView(APIView):
+    def get(self, request):
+        timeframe = request.query_params.get('timeframe', 'All Time')
+        queryset = Ticket.objects.all()
+
+        now = timezone.now()
+        if timeframe == 'Last Month':
+            queryset = queryset.filter(created_at__gte=now - timedelta(days=30))
+        elif timeframe == 'Last 3 Months':
+            queryset = queryset.filter(created_at__gte=now - timedelta(days=90))
+        elif timeframe == 'Last 6 Months':
+            queryset = queryset.filter(created_at__gte=now - timedelta(days=180))
+
+        total = queryset.count()
+        fixed = queryset.filter(status='RESOLVED').count()
+        pending = total - fixed
+        efficiency = round((fixed / total) * 100, 1) if total > 0 else 0.0
+        trend = 5.0 if efficiency > 50 else -2.0
+
+        return Response({
+            'total': total,
+            'fixed': fixed,
+            'pending': pending,
+            'efficiency': efficiency,
+            'trend': trend
+        })
