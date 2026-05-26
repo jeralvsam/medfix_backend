@@ -25,4 +25,7 @@ class LoginSerializer(serializers.Serializer):
 class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
-        fields = '__all__'
+        fields = [
+            'id', 'computer_id', 'location', 'description', 'status', 
+            'created_by', 'created_at', 'reported_at', 'checked_at', 'resolved_at', 'priority'
+        ]

@@ -29,7 +29,17 @@ class Ticket(models.Model):
     reported_at = models.DateTimeField(null=True, blank=True)
     checked_at = models.DateTimeField(null=True, blank=True)
     resolved_at = models.DateTimeField(null=True, blank=True)
-    
+
+    PRIORITY_CHOICES = [
+        ('Higher', 'Higher'),
+        ('Medium', 'Medium'),
+        ('Normal', 'Normal'),
+    ]
+    priority = models.CharField(
+        max_length=50, 
+        choices=PRIORITY_CHOICES, 
+        default='Normal'
+    )
 
     def __str__(self):
         return f"{self.computer_id} - {self.status}"
